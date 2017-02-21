@@ -263,6 +263,17 @@ class WhileStmt extends Stmt {
     }
 }
 
+class ReturnStmt extends Stmt {
+    expr: Expr;
+    constructor(expr: Expr) {
+        super();
+        this.expr = expr;
+    }
+    type() {
+        return "return";
+    }
+}
+
 class BlockStmt extends Stmt {
     vars: Array<DefinedVar>;
     stmts: Array<Stmt>;

@@ -1,29 +1,18 @@
-﻿class Greeter {
-    element: HTMLElement;
-    span: HTMLElement;
-    timerToken: number;
-
-    constructor(element: HTMLElement) {
-        this.element = element;
-        this.element.innerHTML += "The time is: ";
-        this.span = document.createElement('span');
-        this.element.appendChild(this.span);
-        this.span.innerText = new Date().toUTCString();
-        
-    }
-
-    start() {
-        this.timerToken = setInterval(() => this.span.innerHTML = new Date().toUTCString(), 500);
-    }
-
-    stop() {
-        clearTimeout(this.timerToken);
-    }
-
-}
-
-window.onload = () => {
-    var el = document.getElementById('content');
-    var greeter = new Greeter(el);
-    greeter.start();
+﻿window.onload = () => {
+    var src = <HTMLTextAreaElement>document.getElementById("src");
+    var output = <HTMLTextAreaElement>document.getElementById("output");
+    var runbutton = <HTMLButtonElement>document.getElementById("run");
+    runbutton.addEventListener("click", () => {
+        console.log("hello");
+        let tokens = new Lexer(src.value).lex();
+        let parsed = new Parser(tokens).parse();
+        let evaluator = new Evaluator(parsed);
+        let out = "";
+        let outfn = (str) => {
+            out += str + "\n";
+        };
+        evaluator.printFunc = outfn;
+        evaluator.compMain();
+        output.value = out;
+    });
 };

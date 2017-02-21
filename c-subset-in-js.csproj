@@ -29,6 +29,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="app.ts" />
     <TypeScriptCompile Include="ast.ts" />
+    <TypeScriptCompile Include="evaluator.ts" />
     <TypeScriptCompile Include="lexer.ts" />
     <TypeScriptCompile Include="parser.ts" />
     <TypeScriptCompile Include="token.ts" />

@@ -68,6 +68,8 @@
             return this.parseIfStatement();
         } else if (this.match("while")) {
             return this.parseWhileStatement();
+        } else if (this.match("return")) {
+            return this.parseReturnStatement();
         } else {
             return this.parseExpressionStatement();
         }
@@ -142,6 +144,13 @@
         this.expect(")");
         let stmt = this.parseStatement();
         return new WhileStmt(cond, stmt);
+    }
+
+    parseReturnStatement(): ReturnStmt {
+        this.expect("return");
+        let expr = this.parseExpression();
+        this.expect(";");
+        return new ReturnStmt(expr);
     }
 
     parseExpressionStatement(): ExprStmt {
@@ -301,6 +310,3 @@
 class ParseError extends Error {
 }
 
-let tokens = new Lexer("int hoge(a, b, c); int huga() {while(1){}}").lex();
-let parsed = new Parser(tokens).parse();
-console.log(parsed);

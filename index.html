@@ -3,16 +3,30 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>TypeScript HTML App</title>
-    <link rel="stylesheet" href="app.css" type="text/css" />
+    <title>C subset in JS</title>
     <script src="token.js"></script>
     <script src="lexer.js"></script>
     <script src="ast.js"></script>
     <script src="parser.js"></script>
+    <script src="evaluator.js"></script>
+    <script src="app.js"></script>
 </head>
 <body>
-    <h1>TypeScript HTML App</h1>
-
-    <div id="content"></div>
+    <h1>C subset in JS</h1>
+<textarea id="src" cols="40" rows="10">
+int fib(n) {
+    if (n <= 1) return 1;
+    return fib(n  -2) + fib(n - 1);
+}
+int main() {
+    int i = 0;
+    while (i < 20) {
+        print(fib(i));
+        i = i + 1;
+    }
+}</textarea>
+<button id="run">Run</button>
+<textarea id="output" cols="40" rows="10">
+</textarea>
 </body>
 </html>
