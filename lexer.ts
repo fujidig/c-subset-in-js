@@ -4,7 +4,7 @@
     "else": TokenElse,
     "while": TokenWhile,
     "return": TokenReturn,
-}
+};
 
 const SYMBOLS = {
     "<=": TokenLe,
