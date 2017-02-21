@@ -56,6 +56,3 @@ class Lexer {
         return tokens;
     }
 }
-
-
-console.log(new Lexer("int main() { while (1) { print(42); } }").lex());

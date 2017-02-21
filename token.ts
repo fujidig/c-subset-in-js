@@ -1,4 +1,9 @@
 ﻿class Token {
+    type(): string { return ""; }
+}
+
+class TokenEof {
+    type(): string { return "eof"; }
 }
 
 class TokenInt extends Token {
