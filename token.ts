@@ -11,8 +11,8 @@ class TokenInt extends Token {
 }
 
 class TokenConstant extends Token {
-    val: number;
-    constructor(val: number) {
+    val: BigInteger;
+    constructor(val: BigInteger) {
         super();
         this.val = val;
     }

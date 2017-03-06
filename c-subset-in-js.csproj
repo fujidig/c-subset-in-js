@@ -23,12 +23,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.css" />
+    <Content Include="BigInteger.js" />
     <Content Include="index.html" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="app.ts" />
     <TypeScriptCompile Include="ast.ts" />
+    <TypeScriptCompile Include="BigInteger.d.ts" />
     <TypeScriptCompile Include="evaluator.ts" />
     <TypeScriptCompile Include="lexer.ts" />
     <TypeScriptCompile Include="parser.ts" />

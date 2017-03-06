@@ -52,7 +52,7 @@ class Lexer {
                 }
             }
             else if (m = src.match(/^[0-9]+/)) {
-                tokens.push(new TokenConstant(Number(m[0])));
+                tokens.push(new TokenConstant(bigInt(m[0])));
             }
             else if (m = src.match(/<=|>=|==|!=|<<|>>|\&|\||\^|~|\(|\)|,|\+|-|\*|\/|%|=|;|:|{|}|<|>/)) {
                 tokens.push(new SYMBOLS[m[0]]);

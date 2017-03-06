@@ -5,8 +5,8 @@
 }
 
 class ConstantExpr extends Expr {
-    value: number;
-    constructor(value: number) {
+    value: BigInteger;
+    constructor(value: BigInteger) {
         super();
         this.value = value;
     }

@@ -16,15 +16,15 @@ class Evaluator {
         this.comp(this.env.get("main"), []);
     }
 
-    comp(func: FunctionDefinition, args: number[]): number {
-        let vars = new Map<string, number>();
+    comp(func: FunctionDefinition, args: BigInteger[]): BigInteger {
+        let vars = new Map<string, BigInteger>();
         for (let i = 0; i < func.params.length; i++) {
             vars.set(func.params[i], args[i]);
         }
         return this.evalStmt(vars, func.body);
     }
 
-    evalStmt(vars: Map<string, number>, stmt: Stmt) {
+    evalStmt(vars: Map<string, BigInteger>, stmt: Stmt) {
         switch (stmt.type()) {
             case "expr":
                 this.evalExpr(vars, (<ExprStmt>stmt).expr);
@@ -36,7 +36,7 @@ class Evaluator {
                 let cond = (<IfStmt>stmt).cond;
                 let thenstmt = (<IfStmt>stmt).thenstmt;
                 let elsestmt = (<IfStmt>stmt).elsestmt;
-                if (this.evalExpr(vars, cond) != 0) {
+                if (this.evalExpr(vars, cond).notEquals(0)) {
                     return this.evalStmt(vars, thenstmt);
                 } else if (elsestmt != null) {
                     return this.evalStmt(vars, elsestmt);
@@ -46,8 +46,8 @@ class Evaluator {
             case "while":
                 let cond = (<WhileStmt>stmt).cond;
                 let body = (<WhileStmt>stmt).body;
-                let res: number = null;
-                while (this.evalExpr(vars, cond) != 0) {
+                let res: BigInteger = null;
+                while (this.evalExpr(vars, cond).notEquals(0)) {
                     res = this.evalStmt(vars, body);
                     if (res != null) break;
                 }
@@ -55,7 +55,7 @@ class Evaluator {
             case "block":
                 let definedVars = (<BlockStmt>stmt).vars;
                 definedVars.forEach((definedVar) => {
-                    vars.set(definedVar.name, definedVar.expr != null ? this.evalExpr(vars, definedVar.expr) : 0);
+                    vars.set(definedVar.name, definedVar.expr != null ? this.evalExpr(vars, definedVar.expr) : bigInt.zero);
                 });
                 let stmts = (<BlockStmt>stmt).stmts;
                 for (stmt of stmts) {
@@ -68,7 +68,7 @@ class Evaluator {
         }
     }
 
-    evalExpr(vars: Map<string, number>, expr: Expr) {
+    evalExpr(vars: Map<string, BigInteger>, expr: Expr): BigInteger {
         switch (expr.type()) {
             case "constant": return (<ConstantExpr>expr).value;
             case "identifier": return vars.get((<IdentifierExpr>expr).name);
@@ -77,7 +77,7 @@ class Evaluator {
                 let args = (<CallExpr>expr).args.map((expr) => { return this.evalExpr(vars, expr) });
                 if (name == "print") {
                     this.printFunc(String(args[0]));
-                    return 0;
+                    return bigInt.zero;
                 } else {
                     return this.comp(this.env.get(name), args);
                 }
@@ -86,39 +86,39 @@ class Evaluator {
             case "unaryminus":
                 return this.evalExpr(vars, (<UnaryMinusExpr>expr).expr);
             case "mul":
-                return this.evalExpr(vars, (<MulExpr>expr).lhs) * this.evalExpr(vars, (<MulExpr>expr).rhs);
+                return this.evalExpr(vars, (<MulExpr>expr).lhs).multiply(this.evalExpr(vars, (<MulExpr>expr).rhs));
             case "div":
-                return this.evalExpr(vars, (<DivExpr>expr).lhs) / this.evalExpr(vars, (<DivExpr>expr).rhs);
+                return this.evalExpr(vars, (<DivExpr>expr).lhs).divide(this.evalExpr(vars, (<DivExpr>expr).rhs));
             case "mod":
-                return this.evalExpr(vars, (<ModExpr>expr).lhs) % this.evalExpr(vars, (<ModExpr>expr).rhs);
+                return this.evalExpr(vars, (<ModExpr>expr).lhs).mod(this.evalExpr(vars, (<ModExpr>expr).rhs));
             case "add":
-                return this.evalExpr(vars, (<AddExpr>expr).lhs) + this.evalExpr(vars, (<AddExpr>expr).rhs);
+                return this.evalExpr(vars, (<AddExpr>expr).lhs).add(this.evalExpr(vars, (<AddExpr>expr).rhs));
             case "sub":
-                return this.evalExpr(vars, (<SubExpr>expr).lhs) - this.evalExpr(vars, (<SubExpr>expr).rhs);
+                return this.evalExpr(vars, (<SubExpr>expr).lhs).subtract(this.evalExpr(vars, (<SubExpr>expr).rhs));
             case "lt":
-                return this.evalExpr(vars, (<LtExpr>expr).lhs) < this.evalExpr(vars, (<LtExpr>expr).rhs) ? 1 : 0;
+                return this.evalExpr(vars, (<LtExpr>expr).lhs).lesser(this.evalExpr(vars, (<LtExpr>expr).rhs)) ? bigInt.one : bigInt.zero;
             case "gt":
-                return this.evalExpr(vars, (<GtExpr>expr).lhs) > this.evalExpr(vars, (<GtExpr>expr).rhs) ? 1 : 0;
+                return this.evalExpr(vars, (<GtExpr>expr).lhs).greater(this.evalExpr(vars, (<GtExpr>expr).rhs)) ? bigInt.one : bigInt.zero;
             case "lteq":
-                return this.evalExpr(vars, (<LteqExpr>expr).lhs) <= this.evalExpr(vars, (<LteqExpr>expr).rhs) ? 1 : 0;
+                return this.evalExpr(vars, (<LteqExpr>expr).lhs) <= this.evalExpr(vars, (<LteqExpr>expr).rhs) ? bigInt.one : bigInt.zero;
             case "gteq":
-                return this.evalExpr(vars, (<GteqExpr>expr).lhs) >= this.evalExpr(vars, (<GteqExpr>expr).rhs) ? 1 : 0;
+                return this.evalExpr(vars, (<GteqExpr>expr).lhs) >= this.evalExpr(vars, (<GteqExpr>expr).rhs) ? bigInt.one : bigInt.zero;
             case "eq":
-                return this.evalExpr(vars, (<EqExpr>expr).lhs) == this.evalExpr(vars, (<EqExpr>expr).rhs) ? 1 : 0;
+                return this.evalExpr(vars, (<EqExpr>expr).lhs).equals(this.evalExpr(vars, (<EqExpr>expr).rhs)) ? bigInt.one : bigInt.zero;
             case "ne":
-                return this.evalExpr(vars, (<NeExpr>expr).lhs) != this.evalExpr(vars, (<NeExpr>expr).rhs) ? 1 : 0;
+                return this.evalExpr(vars, (<NeExpr>expr).lhs).notEquals(this.evalExpr(vars, (<NeExpr>expr).rhs)) ? bigInt.one : bigInt.zero;
             case "lshift":
-                return this.evalExpr(vars, (<LshiftExpr>expr).lhs) << this.evalExpr(vars, (<LshiftExpr>expr).rhs);
+                //return this.evalExpr(vars, (<LshiftExpr>expr).lhs).shiftthis.evalExpr(vars, (<LshiftExpr>expr).rhs);
             case "rshift":
-                return this.evalExpr(vars, (<RshiftExpr>expr).lhs) >> this.evalExpr(vars, (<RshiftExpr>expr).rhs);
+                //return this.evalExpr(vars, (<RshiftExpr>expr).lhs) >> this.evalExpr(vars, (<RshiftExpr>expr).rhs);
             case "and":
-                return this.evalExpr(vars, (<AndExpr>expr).lhs) & this.evalExpr(vars, (<AndExpr>expr).rhs);
+                //return this.evalExpr(vars, (<AndExpr>expr).lhs) & this.evalExpr(vars, (<AndExpr>expr).rhs);
             case "or":
-                return this.evalExpr(vars, (<OrExpr>expr).lhs) | this.evalExpr(vars, (<OrExpr>expr).rhs);
+                //return this.evalExpr(vars, (<OrExpr>expr).lhs) | this.evalExpr(vars, (<OrExpr>expr).rhs);
             case "xor":
-                return this.evalExpr(vars, (<XorExpr>expr).lhs) ^ this.evalExpr(vars, (<XorExpr>expr).rhs);
+                //return this.evalExpr(vars, (<XorExpr>expr).lhs) ^ this.evalExpr(vars, (<XorExpr>expr).rhs);
             case "bitnot":
-                return ~this.evalExpr(vars, (<BitnotExpr>expr).expr);
+                //return ~this.evalExpr(vars, (<BitnotExpr>expr).expr);
             case "assign":
                 let v = this.evalExpr(vars, (<AssignExpr>expr).expr);
                 vars.set((<AssignExpr>expr).name, v);
