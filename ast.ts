@@ -204,6 +204,82 @@ class NeExpr extends Expr {
     }
 }
 
+class LshiftExpr extends Expr {
+    lhs: Expr;
+    rhs: Expr;
+    constructor(lhs: Expr, rhs: Expr) {
+        super();
+        this.lhs = lhs;
+        this.rhs = rhs;
+    }
+    type() {
+        return "lshift";
+    }
+}
+
+class RshiftExpr extends Expr {
+    lhs: Expr;
+    rhs: Expr;
+    constructor(lhs: Expr, rhs: Expr) {
+        super();
+        this.lhs = lhs;
+        this.rhs = rhs;
+    }
+    type() {
+        return "rshift";
+    }
+}
+
+class AndExpr extends Expr {
+    lhs: Expr;
+    rhs: Expr;
+    constructor(lhs: Expr, rhs: Expr) {
+        super();
+        this.lhs = lhs;
+        this.rhs = rhs;
+    }
+    type() {
+        return "and";
+    }
+}
+
+class OrExpr extends Expr {
+    lhs: Expr;
+    rhs: Expr;
+    constructor(lhs: Expr, rhs: Expr) {
+        super();
+        this.lhs = lhs;
+        this.rhs = rhs;
+    }
+    type() {
+        return "or";
+    }
+}
+
+class XorExpr extends Expr {
+    lhs: Expr;
+    rhs: Expr;
+    constructor(lhs: Expr, rhs: Expr) {
+        super();
+        this.lhs = lhs;
+        this.rhs = rhs;
+    }
+    type() {
+        return "xor";
+    }
+}
+
+class BitnotExpr extends Expr {
+    expr: Expr;
+    constructor(expr: Expr) {
+        super();
+        this.expr = expr;
+    }
+    type() {
+        return "bitnot";
+    }
+}
+
 class AssignExpr extends Expr {
     name: string;
     expr: Expr;

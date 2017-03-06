@@ -195,18 +195,48 @@
     }
 
     parseRelationalExpression(): Expr {
-        let expr = this.parseAdditiveExpression();
+        let expr = this.parseBitopExpression();
         while (this.match("<") || this.match(">") || this.match("<=") || this.match(">=")) {
             let token = this.lookahead;
             this.nextToken();
             if (token.type() == "<") {
-                expr = new LtExpr(expr, this.parseAdditiveExpression());
+                expr = new LtExpr(expr, this.parseBitopExpression());   
             } else if (token.type() == ">") {
-                expr = new GtExpr(expr, this.parseAdditiveExpression());
+                expr = new GtExpr(expr, this.parseBitopExpression());
             } else if (token.type() == "<=") {
-                expr = new LteqExpr(expr, this.parseAdditiveExpression());
+                expr = new LteqExpr(expr, this.parseBitopExpression());
             } else {
-                expr = new GteqExpr(expr, this.parseAdditiveExpression());
+                expr = new GteqExpr(expr, this.parseBitopExpression());
+            }
+        }
+        return expr;
+    }
+
+    parseBitopExpression(): Expr {
+        let expr = this.parseShiftExpression();
+        while (this.match("&") || this.match("|") || this.match("^")) {
+            let token = this.lookahead;
+            this.nextToken();
+            if (token.type() == "&") {
+                expr = new AndExpr(expr, this.parseShiftExpression());
+            } else if (token.type() == "|") {
+                expr = new OrExpr(expr, this.parseShiftExpression());
+            } else {
+                expr = new XorExpr(expr, this.parseShiftExpression());
+            }
+        }
+        return expr;
+    }
+
+    parseShiftExpression(): Expr {
+        let expr = this.parseAdditiveExpression();
+        while (this.match("<<") || this.match(">>")) {
+            let token = this.lookahead;
+            this.nextToken();
+            if (token.type() == "<<") {
+                expr = new LshiftExpr(expr, this.parseAdditiveExpression());
+            } else {
+                expr = new RshiftExpr(expr, this.parseAdditiveExpression());
             }
         }
         return expr;
@@ -250,6 +280,10 @@
         if (this.match("-")) {
             this.nextToken();
             return new UnaryMinusExpr(this.parseUnaryExpression());
+        }
+        if (this.match("~")) {
+            this.nextToken();
+            return new BitnotExpr(this.parseUnaryExpression());
         }
         if (this.match("identifier")) {
             return this.parseIdentifierOrCall();

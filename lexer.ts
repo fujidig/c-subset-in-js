@@ -11,6 +11,12 @@ const SYMBOLS = {
     ">=": TokenGe,
     "==": TokenEq,
     "!=": TokenNe,
+    "<<": TokenLshift,
+    ">>": TokenRshift,
+    "&": TokenAnd,
+    "|": TokenOr,
+    "^": TokenXor,
+    "~": TokenTlide,
     "(": TokenRparen,
     ")": TokenLparen,
     ",": TokenComma,
@@ -48,7 +54,7 @@ class Lexer {
                 }
             } else if (m = src.match(/^[0-9]+/)) {
                 tokens.push(new TokenConstant(Number(m[0])));
-            } else if (m = src.match(/<=|>=|==|!=|\(|\)|,|\+|-|\*|\/|%|=|;|:|{|}|<|>/)) {
+            } else if (m = src.match(/<=|>=|==|!=|<<|>>|\&|\||\^|~|\(|\)|,|\+|-|\*|\/|%|=|;|:|{|}|<|>/)) {
                 tokens.push(new SYMBOLS[m[0]]);
             }
             src = src.slice(m[0].length);

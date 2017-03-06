@@ -159,6 +159,65 @@ class NeExpr extends Expr {
         return "ne";
     }
 }
+class LshiftExpr extends Expr {
+    constructor(lhs, rhs) {
+        super();
+        this.lhs = lhs;
+        this.rhs = rhs;
+    }
+    type() {
+        return "lshift";
+    }
+}
+class RshiftExpr extends Expr {
+    constructor(lhs, rhs) {
+        super();
+        this.lhs = lhs;
+        this.rhs = rhs;
+    }
+    type() {
+        return "rshift";
+    }
+}
+class AndExpr extends Expr {
+    constructor(lhs, rhs) {
+        super();
+        this.lhs = lhs;
+        this.rhs = rhs;
+    }
+    type() {
+        return "and";
+    }
+}
+class OrExpr extends Expr {
+    constructor(lhs, rhs) {
+        super();
+        this.lhs = lhs;
+        this.rhs = rhs;
+    }
+    type() {
+        return "or";
+    }
+}
+class XorExpr extends Expr {
+    constructor(lhs, rhs) {
+        super();
+        this.lhs = lhs;
+        this.rhs = rhs;
+    }
+    type() {
+        return "xor";
+    }
+}
+class BitnotExpr extends Expr {
+    constructor(expr) {
+        super();
+        this.expr = expr;
+    }
+    type() {
+        return "bitnot";
+    }
+}
 class AssignExpr extends Expr {
     constructor(name, expr) {
         super();

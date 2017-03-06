@@ -101,3 +101,21 @@ class TokenEq extends Token {
 class TokenNe extends Token {
     type(): string { return "!="; }
 }
+class TokenLshift extends Token {
+    type(): string { return "<<"; }
+}
+class TokenRshift extends Token {
+    type(): string { return ">>"; }
+}
+class TokenAnd extends Token {
+    type(): string { return "&"; }
+}
+class TokenOr extends Token {
+    type(): string { return "|"; }
+}
+class TokenXor extends Token {
+    type(): string { return "^"; }
+}
+class TokenTlide extends Token {
+    type(): string { return "~"; }
+}

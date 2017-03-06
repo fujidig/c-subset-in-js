@@ -90,4 +90,22 @@ class TokenEq extends Token {
 class TokenNe extends Token {
     type() { return "!="; }
 }
+class TokenLshift extends Token {
+    type() { return "<<"; }
+}
+class TokenRshift extends Token {
+    type() { return ">>"; }
+}
+class TokenAnd extends Token {
+    type() { return "&"; }
+}
+class TokenOr extends Token {
+    type() { return "|"; }
+}
+class TokenXor extends Token {
+    type() { return "^"; }
+}
+class TokenTlide extends Token {
+    type() { return "~"; }
+}
 //# sourceMappingURL=token.js.map
