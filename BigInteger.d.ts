@@ -4,13 +4,8 @@
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
 interface BigInteger {
-    shiftLeft(number: BigInteger): BigInteger;
-    shiftRight(number: BigInteger): BigInteger;
-    and(number: BigInteger): BigInteger;
-    or(number: BigInteger): BigInteger;
-    xor(number: BigInteger): BigInteger;
-    not(): BigInteger;
-
+    shiftLeft(number: number): BigInteger;
+    shiftRight(number: number): BigInteger;
 
     /** Returns the absolute value of a bigInt. */
     abs(): BigInteger;

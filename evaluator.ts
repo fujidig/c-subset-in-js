@@ -108,17 +108,17 @@ class Evaluator {
             case "ne":
                 return this.evalExpr(vars, (<NeExpr>expr).lhs).notEquals(this.evalExpr(vars, (<NeExpr>expr).rhs)) ? bigInt.one : bigInt.zero;
             case "lshift":
-                //return this.evalExpr(vars, (<LshiftExpr>expr).lhs).shiftthis.evalExpr(vars, (<LshiftExpr>expr).rhs);
+                return this.evalExpr(vars, (<LshiftExpr>expr).lhs).shiftLeft(this.evalExpr(vars, (<LshiftExpr>expr).rhs).toJSNumber());
             case "rshift":
-                //return this.evalExpr(vars, (<RshiftExpr>expr).lhs) >> this.evalExpr(vars, (<RshiftExpr>expr).rhs);
+                return this.evalExpr(vars, (<RshiftExpr>expr).lhs).shiftRight(this.evalExpr(vars, (<RshiftExpr>expr).rhs).toJSNumber());
             case "and":
-                //return this.evalExpr(vars, (<AndExpr>expr).lhs) & this.evalExpr(vars, (<AndExpr>expr).rhs);
+                return this.evalExpr(vars, (<AndExpr>expr).lhs).and(this.evalExpr(vars, (<AndExpr>expr).rhs));
             case "or":
-                //return this.evalExpr(vars, (<OrExpr>expr).lhs) | this.evalExpr(vars, (<OrExpr>expr).rhs);
+                return this.evalExpr(vars, (<OrExpr>expr).lhs).or(this.evalExpr(vars, (<OrExpr>expr).rhs));
             case "xor":
-                //return this.evalExpr(vars, (<XorExpr>expr).lhs) ^ this.evalExpr(vars, (<XorExpr>expr).rhs);
+                return this.evalExpr(vars, (<XorExpr>expr).lhs).xor(this.evalExpr(vars, (<XorExpr>expr).rhs));
             case "bitnot":
-                //return ~this.evalExpr(vars, (<BitnotExpr>expr).expr);
+                return this.evalExpr(vars, (<BitnotExpr>expr).expr).not();
             case "assign":
                 let v = this.evalExpr(vars, (<AssignExpr>expr).expr);
                 vars.set((<AssignExpr>expr).name, v);
