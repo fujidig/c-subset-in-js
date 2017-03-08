@@ -1,6 +1,5 @@
 int main() {
-    eval(305336928040822177095924161208169517740955529978466210934000789943685251149552846782651626430512210076692127344630112246921343381527746071833426675993215978116952920221184121299768371624501820209905108503445591303365195417854448685146043507390700741230922454099959902035332290137990184406891670613396333038380075414665392804315529924595626361655062116868604445220444451512450769205503550214891106511693858938312255407226268184730429545018137565566527677768669014370004829267720104863455420977654993982392367806588659998282340560730230308814497803608072365202411630156569914089036823340906183208169575032232527818994047649383957683184953657025397422807556417667841549854427488845717785638195350162049238644673284899218670089977168635826933894996673988176554119708902795576965260115443082068830919418251656622485048113860738756519413604399004164820625641805411095303531950900027929925914499590946725328075424656757699367858570227273805486295089356913719998011321793523545263892202742489276384671718529792872599171743368351556532933034425737980543105625780843860462755547154323040072338675736841663574751816090860289576953430641546148717005914055473820628310967474503995509403866411298823475843692366994468999221822309278232486647670276319476256247220141131388090250489600280622186925901692419911864972010971939516417536539412291115853422170513432686057304082978467410816179619613435423190170161564566564715073697577975010883622539467140768793105328462525369829261131435866988657918939417710756732397940320145195829287068893216, 0, 0);
-    print(114514);
+    eval(1084421363678766844708155858757781040320073720583561632608354003234785419923293425074759457179193743986117897794201551048567322217354963450785925050928820662878351146476920861938892764019251304846210671650088472034362261509, 0, 0);
 }
 
 int eval(int code, int nodeid, int vars) {
@@ -10,12 +9,13 @@ int eval(int code, int nodeid, int vars) {
     int val2 = node_val2(code, nodeid);
     int val3 = node_val3(code, nodeid);
     if (type == 1) { // func
-        return eval(code, val0, vars);
+        vars = set_var(vars, 0, 1);
+        return get_var(eval(code, val0, vars), 0) / 2;
     } else if (type == 2) { // expr
         eval(code, val0, vars);
-        return 1;
+        return vars;
     } else if (type == 3) { // return
-        return eval(code, val0, vars) * 2;
+        return set_var(vars, 0, eval(code, val0, vars) * 2);
     } else if (type == 4) { // if
         int cond = eval(code, val0, vars);
         if (cond) {
@@ -27,74 +27,74 @@ int eval(int code, int nodeid, int vars) {
         }
     } else if (type == 5) { // while
         while (eval(code, val0, vars)) {
-            int val = eval(code, val1, vars);
-            if ((val & 1) == 0) return val;
+            vars = eval(code, val1, vars);
+            if ((get_var(vars, 0) & 1) == 0) return vars;
         }
         return 1;
     } else if (type == 6) { // block
         int i = 0;
         while (i < val0) {
-            int val = eval(code, get_from_data(code, val1 + i), vars);
-            if ((val & 1) == 0) return val;
+            vars = eval(code, get_from_data(code, val1 + i), vars);
+            if ((get_var(vars, 0) & 1) == 0) return vars;
             i = i + 1;
         }
         return 1;
-    } else if (type == 7) { // constant
+    } else if (type == 7) { // assign
+        int val = eval(code, val1, vars);
+        return set_var(vars, val0 + 1, val);
+    } else if (type == 8) { // constant
         return get_bigint_from_data(code, val0);
-    } else if (type == 8) { // identifier
-        return get_var(vars, val0);
-    } else if (type == 9) { // print
+    } else if (type == 9) { // identifier
+        return get_var(vars, val0 + 1);
+    } else if (type == 10) { // print
         print(eval(code, val0, vars));
         return 0;
-    } else if (type == 10) { // call
+    } else if (type == 11) { // call
         int new_vars = 0;
         int i = 0;
         while (i < val1) {
-            set_var(new_vars, i, eval(code, get_from_data(code, val2 + i), vars));
+            new_vars = set_var(new_vars, i + 1, eval(code, get_from_data(code, val2 + i), vars));
             i = i + 1;
         }
-        return eval(code, val0, new_vars) / 2;
-    } else if (type == 11) { // unary plus
+        return eval(code, val0, new_vars);
+    } else if (type == 12) { // unary plus
         return +eval(code, val0, vars);
-    } else if (type == 12) { // unary minus
+    } else if (type == 13) { // unary minus
         return -eval(code, val0, vars);
-    } else if (type == 13) { // mul
+    } else if (type == 14) { // mul
         return eval(code, val0, vars) * eval(code, val1, vars);
-    } else if (type == 14) { // div
+    } else if (type == 15) { // div
         return eval(code, val0, vars) / eval(code, val1, vars);
-    } else if (type == 15) { // mod
+    } else if (type == 16) { // mod
         return eval(code, val0, vars) % eval(code, val1, vars);
-    } else if (type == 16) { // add
+    } else if (type == 17) { // add
         return eval(code, val0, vars) + eval(code, val1, vars);
-    } else if (type == 17) { // sub
+    } else if (type == 18) { // sub
         return eval(code, val0, vars) - eval(code, val1, vars);
-    } else if (type == 18) { // lt
+    } else if (type == 19) { // lt
         return eval(code, val0, vars) < eval(code, val1, vars);
-    } else if (type == 19) { // gt
+    } else if (type == 20) { // gt
         return eval(code, val0, vars) > eval(code, val1, vars);
-    } else if (type == 20) { // lteq
+    } else if (type == 21) { // lteq
         return eval(code, val0, vars) <= eval(code, val1, vars);
-    } else if (type == 21) { // gteq
+    } else if (type == 22) { // gteq
         return eval(code, val0, vars) >= eval(code, val1, vars);
-    } else if (type == 22) { // eq
+    } else if (type == 23) { // eq
         return eval(code, val0, vars) == eval(code, val1, vars);
-    } else if (type == 23) { // ne
+    } else if (type == 24) { // ne
         return eval(code, val0, vars) != eval(code, val1, vars);
-    } else if (type == 24) { // lshift
+    } else if (type == 25) { // lshift
         return eval(code, val0, vars) << eval(code, val1, vars);
-    } else if (type == 25) { // rshift
+    } else if (type == 26) { // rshift
         return eval(code, val0, vars) >> eval(code, val1, vars);
-    } else if (type == 26) { // and
+    } else if (type == 27) { // and
         return eval(code, val0, vars) & eval(code, val1, vars);
-    } else if (type == 27) { // or
+    } else if (type == 28) { // or
         return eval(code, val0, vars) | eval(code, val1, vars);
-    } else if (type == 28) { // xor
+    } else if (type == 29) { // xor
         return eval(code, val0, vars) ^ eval(code, val1, vars);
-    } else if (type == 29) { // bit not
+    } else if (type == 30) { // bit not
         return ~eval(code, val0, vars);
-    } else if (type == 30) { // assign
-        int val = eval(code, val1, vars);
-        return val;
     }
 }
 
@@ -102,12 +102,36 @@ int at(int code, int i) {
     return code >> (i*32) & 0xffffffff;
 }
 
-int get_var(int vars, int index) {
-    int i = 0, pos = 0, length, negative, val;
+int seek_var(int vars, int index) {
+    int i = 0, pos = 0, length;
     while (i < index) {
         length = at(vars, pos) >> 1;
         pos = pos + 1 + length;
+        i = i + 1;
     }
+    return pos;
+}
+
+int bigint_length(int x) {
+    int l = 0;
+    while (x != 0) {
+        x = x >> 32;
+        l = l + 1;
+    }
+    return l;
+}
+
+int abs(x) {
+    if (x < 0) {
+        return -x;
+    } else {
+        return x;
+    }
+}
+
+int get_var(int vars, int index) {
+    int pos, length, negative, val;
+    pos = seek_var(vars, index);
     length = at(vars, pos) >> 1;
     negative = at(vars, pos) & 1;
     val = vars >> ((pos + 1) * 32) & ((1 << length * 32) - 1);
@@ -119,6 +143,15 @@ int get_var(int vars, int index) {
 }
 
 int set_var(int vars, int index, int val) {
+    return 0;
+    //int pos = seek_var(vars, index);
+    //int pos2 = seek_var(vars, index + 1);
+    //int length = bigint_length(abs(val));
+    //int negative = val < 0;
+    //int head = vars >> pos2 << (pos + length + 1);
+    //int body = ((length << 1 | negative) << 32 | abs(val)) << pos;
+    //int tail = vars & ((1 << pos) - 1);
+    //return head | body | tail;
 }
 
 int num_nodes(int code) {

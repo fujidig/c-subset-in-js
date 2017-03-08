@@ -78,7 +78,6 @@ class Evaluator {
             case "identifier":
                 let val = vars.get((<IdentifierExpr>expr).name);
                 if (val == undefined) {
-                    console.log(vars);
                     throw "unbound: " + (<IdentifierExpr>expr).name;
                 }
                 return val;
@@ -86,7 +85,6 @@ class Evaluator {
                 let name = (<CallExpr>expr).name;
                 let args = (<CallExpr>expr).args.map((expr) => { return this.evalExpr(vars, expr) });
                 if (name == "print") {
-                    console.log(args);
                     this.printFunc(args[0].toRadix(10));
                     return BigInteger.ZERO;
                 } else {

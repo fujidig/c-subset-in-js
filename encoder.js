@@ -4,30 +4,30 @@ const NODE_RETURN = 3;
 const NODE_IF = 4;
 const NODE_WHILE = 5;
 const NODE_BLOCK = 6;
-const NODE_CONSTANT = 7;
-const NODE_IDENTIFIER = 8;
-const NODE_PRINT = 9;
-const NODE_CALL = 10;
-const NODE_UNARYPLUS = 11;
-const NODE_UNARYMINUS = 12;
-const NODE_MUL = 13;
-const NODE_DIV = 14;
-const NODE_MOD = 15;
-const NODE_ADD = 16;
-const NODE_SUB = 17;
-const NODE_LT = 18;
-const NODE_GT = 19;
-const NODE_LTEQ = 20;
-const NODE_GTEQ = 21;
-const NODE_EQ = 22;
-const NODE_NE = 23;
-const NODE_LSHIFT = 24;
-const NODE_RSHIFT = 25;
-const NODE_AND = 26;
-const NODE_OR = 27;
-const NODE_XOR = 28;
-const NODE_BITNOT = 29;
-const NODE_ASSIGN = 30;
+const NODE_ASSIGN = 7;
+const NODE_CONSTANT = 8;
+const NODE_IDENTIFIER = 9;
+const NODE_PRINT = 10;
+const NODE_CALL = 111;
+const NODE_UNARYPLUS = 12;
+const NODE_UNARYMINUS = 13;
+const NODE_MUL = 14;
+const NODE_DIV = 15;
+const NODE_MOD = 16;
+const NODE_ADD = 17;
+const NODE_SUB = 18;
+const NODE_LT = 19;
+const NODE_GT = 20;
+const NODE_LTEQ = 21;
+const NODE_GTEQ = 22;
+const NODE_EQ = 23;
+const NODE_NE = 24;
+const NODE_LSHIFT = 25;
+const NODE_RSHIFT = 26;
+const NODE_AND = 27;
+const NODE_OR = 28;
+const NODE_XOR = 29;
+const NODE_BITNOT = 30;
 class Encoder {
     constructor(funcs) {
         this.funcs = [];
@@ -81,7 +81,13 @@ class Encoder {
     encodeStmt(vars, stmt) {
         switch (stmt.type()) {
             case "expr":
-                this.nodes.push([NODE_EXPR, this.encodeExpr(vars, stmt.expr)]);
+                if (stmt.expr.type() == "assign") {
+                    let expr = stmt.expr;
+                    this.nodes.push([NODE_ASSIGN, this.putVar(vars, expr.name), this.encodeExpr(vars, expr.expr)]);
+                }
+                else {
+                    this.nodes.push([NODE_EXPR, this.encodeExpr(vars, stmt.expr)]);
+                }
                 break;
             case "return":
                 this.nodes.push([NODE_RETURN, this.encodeExpr(vars, stmt.expr)]);
@@ -197,8 +203,7 @@ class Encoder {
                 this.nodes.push([NODE_BITNOT, this.encodeExpr(vars, expr.expr)]);
                 break;
             case "assign":
-                this.nodes.push([NODE_ASSIGN, this.putVar(vars, expr.name), this.encodeExpr(vars, expr.expr)]);
-                break;
+                throw new Error("assign in expression");
             default:
                 throw new Error("unsupported: " + expr.type());
         }

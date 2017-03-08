@@ -11,7 +11,7 @@
         let outfn = (str) => {
             out += str + "\n";
         };
-        evaluator.printFunc = outfn;
+        //evaluator.printFunc = outfn;
         evaluator.compMain();
         output.value = out;
     });
