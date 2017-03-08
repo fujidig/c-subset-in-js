@@ -18,10 +18,14 @@ class Evaluator {
 
     comp(func: FunctionDefinition, args: BigInteger[]): BigInteger {
         let vars = new Map<string, BigInteger>();
+        if (func.params.length != args.length) {
+            throw "unmatch arg length: "+func.name;
+        }
         for (let i = 0; i < func.params.length; i++) {
             vars.set(func.params[i], args[i]);
         }
-        return this.evalStmt(vars, func.body);
+        let val = this.evalStmt(vars, func.body);
+        return val != null ? val : BigInteger.ZERO;
     }
 
     evalStmt(vars: Map<string, BigInteger>, stmt: Stmt) {
@@ -71,11 +75,18 @@ class Evaluator {
     evalExpr(vars: Map<string, BigInteger>, expr: Expr): BigInteger {
         switch (expr.type()) {
             case "constant": return (<ConstantExpr>expr).value;
-            case "identifier": return vars.get((<IdentifierExpr>expr).name);
+            case "identifier":
+                let val = vars.get((<IdentifierExpr>expr).name);
+                if (val == undefined) {
+                    console.log(vars);
+                    throw "unbound: " + (<IdentifierExpr>expr).name;
+                }
+                return val;
             case "call":
                 let name = (<CallExpr>expr).name;
                 let args = (<CallExpr>expr).args.map((expr) => { return this.evalExpr(vars, expr) });
                 if (name == "print") {
+                    console.log(args);
                     this.printFunc(args[0].toRadix(10));
                     return BigInteger.ZERO;
                 } else {

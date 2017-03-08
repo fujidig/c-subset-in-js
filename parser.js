@@ -37,7 +37,9 @@ class Parser {
     }
     parseIdentifierList() {
         let names = [];
-        while (this.match("identifier")) {
+        while (this.match("identifier") || this.matchTypeSpecifier()) {
+            if (this.matchTypeSpecifier())
+                this.parseTypeSpecifier();
             names.push(this.parseIdentifier());
             if (!this.match(",")) {
                 break;
@@ -286,7 +288,7 @@ class Parser {
             this.expect(")");
             return expr;
         }
-        throw new ParseError("parse error at parseUnaryExprresion");
+        throw new ParseError("parse error at parseUnaryExprresion: " + this.lookahead.type());
     }
     parseIdentifierOrCall() {
         let name = this.parseIdentifier();

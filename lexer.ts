@@ -46,12 +46,15 @@ class Lexer {
         while (src != "") {
             var m: RegExpMatchArray;
             if (m = src.match(/^\s+/)) {
+            } else if (m = src.match(/^\/\/.*/)) {
             } else if (m = src.match(/^[a-zA-Z_][a-zA-Z_0-9]*/)) {
                 if (RESERVED_WORD.hasOwnProperty(m[0])) {
                     tokens.push(new RESERVED_WORD[m[0]]);
                 } else {
                     tokens.push(new TokenIdentifier(m[0]));
                 }
+            } else if (m = src.match(/^0x[0-9a-f]+/i)) {
+                tokens.push(new TokenConstant(new BigInteger(m[0].slice(2), 16)));
             } else if (m = src.match(/^[0-9]+/)) {
                 tokens.push(new TokenConstant(new BigInteger(m[0], 10)));
             } else if (m = src.match(/<=|>=|==|!=|<<|>>|\&|\||\^|~|\(|\)|,|\+|-|\*|\/|%|=|;|:|{|}|<|>/)) {
