@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <title>C subset in JS</title>
-    <script src="BigInteger.js"></script>
+    <script src="bigi.js"></script>
     <script src="token.js"></script>
     <script src="lexer.js"></script>
     <script src="ast.js"></script>
@@ -15,6 +15,8 @@
 </head>
 <body>
     <h1>C subset in JS</h1>
+<table>
+<tr><td>
 <textarea id="src" cols="40" rows="10">
 int fib(n) {
     if (n <= 1) return 1;
@@ -27,8 +29,12 @@ int main() {
         i = i + 1;
     }
 }</textarea>
-<button id="run">Run</button>
+</td><td>
+<button id="run">Run</button><br />
+<button id="encode">Encode</button>
+</td><td>
 <textarea id="output" cols="40" rows="10">
 </textarea>
+</td></tr></table>
 </body>
 </html>

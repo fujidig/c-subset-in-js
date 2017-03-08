@@ -71,9 +71,9 @@ class Encoder {
         for (let x of this.data) {
             numbers.push(x);
         }
-        let code = bigInt.zero;
+        let code = BigInteger.ZERO;
         for (let x of numbers.reverse()) {
-            code = code.shiftLeft(32).or(x >>> 0);
+            code = code.shiftLeft(32).or(new BigInteger(String(x >>> 0), 10));
         }
         return code;
     }
@@ -222,16 +222,16 @@ class Encoder {
     }
 
     pushBigint(bigint: BigInteger) {
-        let bint = <any>bigint;
-        let value: number[];
-        if (bint.isSmall) {
-            value = [bint.value];
-        } else {
-            value = bint.value;
+        let length = 0;
+        let sign = bigint.signum() < 0;
+        let value: number[] = [];
+        bigint = bigint.abs();
+        while (!bigint.equals(BigInteger.ZERO)) {
+            value.push(bigint.and(new BigInteger("FFFFFFFF", 16)).intValue());
+            bigint = bigint.shiftRight(32);
+            length++;
         }
-        let sign: boolean = bint.sign;
-        let length_and_sign = value.length << 1 | (sign ? 1 : 0);
-        return this.pushData([length_and_sign, ...value]);
+        return this.pushData([length << 1 | (sign ? 1 : 0), ...value]);
     }
 
     pushData(data: number[]) {

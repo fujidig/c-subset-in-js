@@ -36,7 +36,7 @@ class Evaluator {
                 let cond = (<IfStmt>stmt).cond;
                 let thenstmt = (<IfStmt>stmt).thenstmt;
                 let elsestmt = (<IfStmt>stmt).elsestmt;
-                if (this.evalExpr(vars, cond).notEquals(0)) {
+                if (!this.evalExpr(vars, cond).equals(BigInteger.ZERO)) {
                     return this.evalStmt(vars, thenstmt);
                 } else if (elsestmt != null) {
                     return this.evalStmt(vars, elsestmt);
@@ -47,7 +47,7 @@ class Evaluator {
                 let cond = (<WhileStmt>stmt).cond;
                 let body = (<WhileStmt>stmt).body;
                 let res: BigInteger = null;
-                while (this.evalExpr(vars, cond).notEquals(0)) {
+                while (!this.evalExpr(vars, cond).equals(BigInteger.ZERO)) {
                     res = this.evalStmt(vars, body);
                     if (res != null) break;
                 }
@@ -55,7 +55,7 @@ class Evaluator {
             case "block":
                 let definedVars = (<BlockStmt>stmt).vars;
                 definedVars.forEach((definedVar) => {
-                    vars.set(definedVar.name, definedVar.expr != null ? this.evalExpr(vars, definedVar.expr) : bigInt.zero);
+                    vars.set(definedVar.name, definedVar.expr != null ? this.evalExpr(vars, definedVar.expr) : BigInteger.ZERO);
                 });
                 let stmts = (<BlockStmt>stmt).stmts;
                 for (stmt of stmts) {
@@ -76,41 +76,41 @@ class Evaluator {
                 let name = (<CallExpr>expr).name;
                 let args = (<CallExpr>expr).args.map((expr) => { return this.evalExpr(vars, expr) });
                 if (name == "print") {
-                    this.printFunc(String(args[0]));
-                    return bigInt.zero;
+                    this.printFunc(args[0].toRadix(10));
+                    return BigInteger.ZERO;
                 } else {
                     return this.comp(this.env.get(name), args);
                 }
             case "unaryplus":
                 return this.evalExpr(vars, (<UnaryPlusExpr>expr).expr);
             case "unaryminus":
-                return bigInt.zero.subtract(this.evalExpr(vars, (<UnaryMinusExpr>expr).expr));
+                return BigInteger.ZERO.subtract(this.evalExpr(vars, (<UnaryMinusExpr>expr).expr));
             case "mul":
                 return this.evalExpr(vars, (<MulExpr>expr).lhs).multiply(this.evalExpr(vars, (<MulExpr>expr).rhs));
             case "div":
                 return this.evalExpr(vars, (<DivExpr>expr).lhs).divide(this.evalExpr(vars, (<DivExpr>expr).rhs));
             case "mod":
-                return this.evalExpr(vars, (<ModExpr>expr).lhs).mod(this.evalExpr(vars, (<ModExpr>expr).rhs));
+                return this.evalExpr(vars, (<ModExpr>expr).lhs).remainder(this.evalExpr(vars, (<ModExpr>expr).rhs));
             case "add":
                 return this.evalExpr(vars, (<AddExpr>expr).lhs).add(this.evalExpr(vars, (<AddExpr>expr).rhs));
             case "sub":
                 return this.evalExpr(vars, (<SubExpr>expr).lhs).subtract(this.evalExpr(vars, (<SubExpr>expr).rhs));
             case "lt":
-                return this.evalExpr(vars, (<LtExpr>expr).lhs).lesser(this.evalExpr(vars, (<LtExpr>expr).rhs)) ? bigInt.one : bigInt.zero;
+                return this.evalExpr(vars, (<LtExpr>expr).lhs).compareTo(this.evalExpr(vars, (<LtExpr>expr).rhs)) < 0 ? BigInteger.ONE : BigInteger.ZERO;
             case "gt":
-                return this.evalExpr(vars, (<GtExpr>expr).lhs).greater(this.evalExpr(vars, (<GtExpr>expr).rhs)) ? bigInt.one : bigInt.zero;
+                return this.evalExpr(vars, (<GtExpr>expr).lhs).compareTo(this.evalExpr(vars, (<GtExpr>expr).rhs)) > 0 ? BigInteger.ONE : BigInteger.ZERO;
             case "lteq":
-                return this.evalExpr(vars, (<LteqExpr>expr).lhs) <= this.evalExpr(vars, (<LteqExpr>expr).rhs) ? bigInt.one : bigInt.zero;
+                return this.evalExpr(vars, (<LteqExpr>expr).lhs).compareTo(this.evalExpr(vars, (<LteqExpr>expr).rhs)) <= 0 ? BigInteger.ONE : BigInteger.ZERO;
             case "gteq":
-                return this.evalExpr(vars, (<GteqExpr>expr).lhs) >= this.evalExpr(vars, (<GteqExpr>expr).rhs) ? bigInt.one : bigInt.zero;
+                return this.evalExpr(vars, (<GteqExpr>expr).lhs).compareTo(this.evalExpr(vars, (<GteqExpr>expr).rhs)) >= 0 ? BigInteger.ONE : BigInteger.ZERO;
             case "eq":
-                return this.evalExpr(vars, (<EqExpr>expr).lhs).equals(this.evalExpr(vars, (<EqExpr>expr).rhs)) ? bigInt.one : bigInt.zero;
+                return this.evalExpr(vars, (<EqExpr>expr).lhs).equals(this.evalExpr(vars, (<EqExpr>expr).rhs)) ? BigInteger.ONE : BigInteger.ZERO;
             case "ne":
-                return this.evalExpr(vars, (<NeExpr>expr).lhs).notEquals(this.evalExpr(vars, (<NeExpr>expr).rhs)) ? bigInt.one : bigInt.zero;
+                return !this.evalExpr(vars, (<NeExpr>expr).lhs).equals(this.evalExpr(vars, (<NeExpr>expr).rhs)) ? BigInteger.ONE : BigInteger.ZERO;
             case "lshift":
-                return this.evalExpr(vars, (<LshiftExpr>expr).lhs).shiftLeft(this.evalExpr(vars, (<LshiftExpr>expr).rhs).toJSNumber());
+                return this.evalExpr(vars, (<LshiftExpr>expr).lhs).shiftLeft(this.evalExpr(vars, (<LshiftExpr>expr).rhs).intValue());
             case "rshift":
-                return this.evalExpr(vars, (<RshiftExpr>expr).lhs).shiftRight(this.evalExpr(vars, (<RshiftExpr>expr).rhs).toJSNumber());
+                return this.evalExpr(vars, (<RshiftExpr>expr).lhs).shiftRight(this.evalExpr(vars, (<RshiftExpr>expr).rhs).intValue());
             case "and":
                 return this.evalExpr(vars, (<AndExpr>expr).lhs).and(this.evalExpr(vars, (<AndExpr>expr).rhs));
             case "or":
