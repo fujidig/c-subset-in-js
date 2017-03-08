@@ -84,7 +84,7 @@ class Evaluator {
             case "unaryplus":
                 return this.evalExpr(vars, (<UnaryPlusExpr>expr).expr);
             case "unaryminus":
-                return this.evalExpr(vars, (<UnaryMinusExpr>expr).expr);
+                return bigInt.zero.subtract(this.evalExpr(vars, (<UnaryMinusExpr>expr).expr));
             case "mul":
                 return this.evalExpr(vars, (<MulExpr>expr).lhs).multiply(this.evalExpr(vars, (<MulExpr>expr).rhs));
             case "div":

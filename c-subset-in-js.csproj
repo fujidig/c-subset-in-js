@@ -31,6 +31,7 @@
     <TypeScriptCompile Include="app.ts" />
     <TypeScriptCompile Include="ast.ts" />
     <TypeScriptCompile Include="BigInteger.d.ts" />
+    <TypeScriptCompile Include="encoder.ts" />
     <TypeScriptCompile Include="evaluator.ts" />
     <TypeScriptCompile Include="lexer.ts" />
     <TypeScriptCompile Include="parser.ts" />
