@@ -117,7 +117,6 @@ class Encoder {
                 let nodes = [];
                 for (let definedVar of definedVars) {
                     this.nodes.push([NODE_ASSIGN, this.putVar(vars, definedVar.name), this.encodeExpr(vars, definedVar.expr)]);
-                    this.nodes.push([NODE_EXPR, this.nodes.length - 1]);
                     nodes.push(this.nodes.length - 1);
                 }
                 for (let stmt of stmts) {

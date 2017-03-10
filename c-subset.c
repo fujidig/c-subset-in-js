@@ -1,5 +1,5 @@
 int main() {
-    eval(1084421363678766844708155858757781040320073720583561632608354003234785419923293425074759457179193743986117897794201551048567322217354963450785925050928820662878351146476920861938892764019251304846210671650088472034362261509, 0, 0);
+    eval(898846567514869564775611130988145997269906041653602040019363680685198483055986083780758845929434024309128772565602199199402288777589720840372215706567396292047428507459438078663930152848672511125082849726746003732273285668187571920979815049549217747665528114881748135363313278010792344499457650487338205184007, 0, 0);
 }
 
 int eval(int code, int nodeid, int vars) {
@@ -143,15 +143,14 @@ int get_var(int vars, int index) {
 }
 
 int set_var(int vars, int index, int val) {
-    return 0;
-    //int pos = seek_var(vars, index);
-    //int pos2 = seek_var(vars, index + 1);
-    //int length = bigint_length(abs(val));
-    //int negative = val < 0;
-    //int head = vars >> pos2 << (pos + length + 1);
-    //int body = ((length << 1 | negative) << 32 | abs(val)) << pos;
-    //int tail = vars & ((1 << pos) - 1);
-    //return head | body | tail;
+    int pos = seek_var(vars, index);
+    int pos2 = seek_var(vars, index);
+    int length = bigint_length(val);
+    int negative = val < 0;
+    int head = vars >> 32 * pos2 << 32 * (pos + length + 1);
+    int body = (abs(val) << 32 | (length << 1 | negative)) << 32 * pos;
+    int tail = vars & ((1 << 32 * pos) - 1);
+    return head | body | tail;
 }
 
 int num_nodes(int code) {

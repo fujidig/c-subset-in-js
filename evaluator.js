@@ -1,15 +1,17 @@
 class Evaluator {
     constructor(funcs) {
+        this.stack = [];
         this.env = new Map();
         funcs.forEach((func) => {
             this.env.set(func.name, func);
         });
-        this.printFunc = console.log;
     }
     compMain() {
         this.comp(this.env.get("main"), []);
     }
     comp(func, args) {
+        this.stack.push("  ");
+        console.log(this.stack.join("") + func.name);
         let vars = new Map();
         if (func.params.length != args.length) {
             throw "unmatch arg length: " + func.name;
@@ -18,6 +20,8 @@ class Evaluator {
             vars.set(func.params[i], args[i]);
         }
         let val = this.evalStmt(vars, func.body);
+        console.log(this.stack.join("") + func.name + " retval=" + (val != null ? val.intValue() : 0));
+        this.stack.pop();
         return val != null ? val : BigInteger.ZERO;
     }
     evalStmt(vars, stmt) {
