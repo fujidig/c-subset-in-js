@@ -144,12 +144,12 @@ int get_var(int vars, int index) {
 
 int set_var(int vars, int index, int val) {
     int pos = seek_var(vars, index);
-    int pos2 = seek_var(vars, index);
+    int pos2 = seek_var(vars, index + 1);
     int length = bigint_length(val);
     int negative = val < 0;
-    int head = vars >> 32 * pos2 << 32 * (pos + length + 1);
+    int head = vars >> (32 * pos2) << 32 * (pos + length + 1);
     int body = (abs(val) << 32 | (length << 1 | negative)) << 32 * pos;
-    int tail = vars & ((1 << 32 * pos) - 1);
+    int tail = vars & ((1 << (32 * pos)) - 1);
     return head | body | tail;
 }
 
