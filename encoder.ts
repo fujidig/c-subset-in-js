@@ -8,7 +8,7 @@ const NODE_ASSIGN = 7;
 const NODE_CONSTANT = 8;
 const NODE_IDENTIFIER = 9;
 const NODE_PRINT = 10;
-const NODE_CALL = 111;
+const NODE_CALL = 11;
 const NODE_UNARYPLUS = 12;
 const NODE_UNARYMINUS = 13;
 const NODE_MUL = 14;
@@ -116,8 +116,10 @@ class Encoder {
                 let stmts = (<BlockStmt>stmt).stmts;
                 let nodes = [];
                 for (let definedVar of definedVars) {
-                    this.nodes.push([NODE_ASSIGN, this.putVar(vars, definedVar.name), this.encodeExpr(vars, definedVar.expr)]);
-                    nodes.push(this.nodes.length - 1);
+                    if (definedVar.expr) {
+                        this.nodes.push([NODE_ASSIGN, this.putVar(vars, definedVar.name), this.encodeExpr(vars, definedVar.expr)]);
+                        nodes.push(this.nodes.length - 1);
+                    }
                 }
                 for (let stmt of stmts) {
                     nodes.push(this.encodeStmt(vars, stmt));
