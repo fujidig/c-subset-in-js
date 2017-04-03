@@ -12,14 +12,16 @@ class Evaluator {
     }
 
     compMain() {
+        let t = Date.now();
         this.comp(this.env.get("main"), []);
+        console.log("elapsed time: " + (Date.now() - t));
     }
 
     stack = [];
 
     comp(func: FunctionDefinition, args: BigInteger[]): BigInteger {
         this.stack.push("  ");
-        console.log(this.stack.join("") + func.name);
+        //console.log(this.stack.join("") + func.name);
         let vars = new Map<string, BigInteger>();
         if (func.params.length != args.length) {
             throw "unmatch arg length: "+func.name;
@@ -28,7 +30,7 @@ class Evaluator {
             vars.set(func.params[i], args[i]);
         }
         let val = this.evalStmt(vars, func.body);
-        console.log(this.stack.join("") + func.name + " retval=" + (val != null ? val.intValue() : 0));
+        //console.log(this.stack.join("") + func.name + " retval=" + (val != null ? val.intValue() : 0));
         this.stack.pop()
         return val != null ? val : BigInteger.ZERO;
     }
